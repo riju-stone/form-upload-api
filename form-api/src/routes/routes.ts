@@ -12,3 +12,5 @@ router.get("/status", (_, res) => {
 
 // Route for Form Data Upload
 router.use(userDataRoute);
+
+export default router;

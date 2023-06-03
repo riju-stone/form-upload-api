@@ -23,14 +23,6 @@ export class UserData {
 
 	@prop({})
 	files: Array<string> | null;
-
-	// validateFileUpload(this: DocumentType<UserData>, files: Array<string>) {
-	// 	try {
-	// 		return files.length <= 5;
-	// 	} catch (err) {
-	// 		log.error("Cannot upload more than 5 files");
-	// 	}
-	// }
 }
 
 const UserDataModel = getModelForClass(UserData);

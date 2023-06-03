@@ -6,8 +6,9 @@ async function connectDB() {
 	const dbUrl = config.get<string>("dbUrl");
 	try {
 		await mongoose.connect(dbUrl);
-	} catch (err) {
-		log.error("Error Connecting to Database: ", err);
+		log.info("Successfully connected to DB");
+	} catch (err: any) {
+		log.error(err, "Error connecting to DB");
 	}
 }
 
