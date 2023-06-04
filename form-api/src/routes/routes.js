@@ -1,6 +1,7 @@
 import express from "express";
 import log from "../utils/logger";
-import userDataRoute from "./postUserData.routes";
+import userUpload from "../middleware/user.middleware";
+import createUserData from "../controller/user.controller";
 
 const router = express.Router();
 
@@ -10,7 +11,7 @@ router.get("/status", (_, res) => {
 	log.info("Server Status: Running");
 });
 
-// Route for Form Data Upload
-router.use(userDataRoute);
+// Handle User Data Upload
+router.post("/upload", userUpload.array("files[]"), createUserData);
 
 export default router;

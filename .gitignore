@@ -130,4 +130,5 @@ dist
 .pnp.*
 
 # custom exclusions
-config/default.ts
+config/
+uploads/
