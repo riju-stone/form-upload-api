@@ -3,7 +3,7 @@ import log from "./logger.js";
 
 async function connectDB() {
 	try {
-		await mongoose.connect("", {
+		mongoose.connect(process.env.DB_URL, {
 			useUnifiedTopology: true,
 			useNewUrlParser: true,
 		});

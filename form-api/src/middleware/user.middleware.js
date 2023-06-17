@@ -19,7 +19,7 @@ let userUpload = multer({
 			file.mimetype == "image/png" ||
 			file.mimetype == "image/jpg" ||
 			file.mimetype == "image/jpeg" ||
-			file.mimetype == "text/pdf"
+			file.mimetype == "application/pdf"
 		) {
 			callback(null, true);
 		} else {
