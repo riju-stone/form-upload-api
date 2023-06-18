@@ -1,9 +1,12 @@
 import mongoose from "mongoose";
 import log from "./logger.js";
+import config from "config";
+
+let dbUrl = config.get("dbUrl");
 
 async function connectDB() {
 	try {
-		mongoose.connect(process.env.DB_URL, {
+		mongoose.connect(dbUrl, {
 			useUnifiedTopology: true,
 			useNewUrlParser: true,
 		});

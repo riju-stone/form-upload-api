@@ -4,11 +4,17 @@ import log from "../utils/logger";
 
 const storage = multer.diskStorage({
 	destination: (req, file, callback) => {
-		callback(null, "uploads/");
+		if (file.fieldname == "prescriptions")
+			callback(null, "uploads/prescriptions/");
+		else if (file.fieldname == "vaccinations")
+			callback(null, "uploads/vaccinations/");
 	},
 	filename: (req, file, callback) => {
 		let ext = path.extname(file.originalname);
-		callback(null, file.originalname.split(".")[0] + "-" + Date.now() + ext);
+		callback(
+			null,
+			file.originalname.replace(" ", "_").split(".")[0] + "_" + Date.now() + ext
+		);
 	},
 });
 
@@ -24,12 +30,18 @@ let userUpload = multer({
 			callback(null, true);
 		} else {
 			log.error("Incorrect File Extension: ", file);
+			res.status(400).send("Unsupported file extension")
 			callback(null, false);
 		}
 	},
 	limits: {
-		fileSize: 1024 * 1024 * 5, // Max 5MB File Allowed
+		fileSize: 1024 * 1024 * 2, // Max 2MB File Allowed
 	},
 });
 
-export default userUpload;
+let multipleFieldsUpload = userUpload.fields([
+	{ name: "prescriptions", maxCount: 4 },
+	{ name: "vaccinations", maxCount: 4 },
+]);
+
+export default multipleFieldsUpload;

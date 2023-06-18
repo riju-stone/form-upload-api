@@ -1,8 +1,18 @@
-import express from "express";
 import UserModel from "../models/user.model";
 import log from "../utils/logger";
 
-let userEmail = null;
+const formatFileUploadPath = (files) => {
+	let paths = "";
+
+	files.forEach((file, index, arr) => {
+		paths = paths + file.path + ",";
+	});
+
+	paths = paths.substring(0, paths.lastIndexOf(","));
+	paths = paths.replaceAll("\\", "/");
+
+	return paths;
+};
 
 export const createUserData = async (req, res, next) => {
 	let userData = new UserModel({
@@ -11,49 +21,31 @@ export const createUserData = async (req, res, next) => {
 		email: req.body.email,
 	});
 
-	userEmail = req.body.email;
+	log.info(req.files, "Files Uploaded");
 
 	if (req.files) {
-		let path = "";
-		req.files.forEach(function (file, index, arr) {
-			path = path + file.path + ",";
-		});
-		path = path.substring(0, path.lastIndexOf(","));
-		console.log("File Paths", path);
-		userData.files = path;
+		// Handling Prescriptions Files
+		userData.prescriptions = formatFileUploadPath(req.files.prescriptions);
+
+		// Handling Vaccination Files
+		userData.vaccinations = formatFileUploadPath(req.files.vaccinations);
 	}
 
-	let userExists = await UserModel.find({ email: userData.email });
-	log.info(userExists);
-	if (userExists[0] == {}) {
+	let userExists = await UserModel.exists({ email: userData.email });
+	log.info(userExists, "Existing User Data");
+	if (userExists) {
 		log.error("User Already Exists");
-		res.sendStatus(400);
+		res.status(400).send("User Already Exists");
 	} else {
 		userData
 			.save()
 			.then(() => {
 				log.info("User Data Uploaded Successfully");
-				res.sendStatus(200);
+				res.status(200).send("User Data Uploaded Successfully");
 			})
 			.catch((err) => {
-				res.sendStatus(400);
+				res.status(400).send("Could not upload user data");
 				log.error(err, "Could not upload user data");
 			});
 	}
-};
-
-export const getUserData = () => async (_, res) => {
-	let userData = await UserModel.find({ email: userEmail });
-	let fileData = "";
-	if (userData[0] != {}) {
-		fileData = userData[0].files;
-	} else {
-		res.sendStatus(400);
-		log.error("Could not locate user data in database");
-	}
-
-	fileData = fileData.split(",");
-	log.info(JSON.stringify(fileData), " File Data");
-
-	fileData.forEach((i) => res.send(`http://localhost:3010/${fileData[i]}`));
 };

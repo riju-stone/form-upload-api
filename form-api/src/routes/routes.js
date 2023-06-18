@@ -1,11 +1,12 @@
 import express from "express";
 import rateLimit from "express-rate-limit";
 import log from "../utils/logger";
-import userUpload from "../middleware/user.middleware";
-import UserModel from "../models/user.model";
-import { createUserData, getUserData } from "../controller/user.controller";
+import config from "config";
+import multipleFieldsUpload from "../middleware/user.middleware";
+import { createUserData } from "../controller/user.controller";
 
 const router = express.Router();
+const apiVersion = config.get("apiVersion");
 
 const apiLimiter = rateLimit({
 	windowMs: 30 * 60 * 1000, // 60 minutes
@@ -17,15 +18,17 @@ const apiLimiter = rateLimit({
 });
 
 // Health Check Route
-router.get("/status", (_, res) => {
-	res.sendStatus(200);
+router.get(`/${apiVersion}/status`, (_, res) => {
+	res.status(200).send("Server Status: Running");
 	log.info("Server Status: Running");
 });
 
 // Handle User Data Upload
-router.post("/upload", apiLimiter, userUpload.array("files[]"), createUserData);
-
-// Handle fetching User Data
-router.get("/files/uploaded/", express.static("uploads"));
+router.post(
+	`/${apiVersion}/upload`,
+	apiLimiter,
+	multipleFieldsUpload,
+	createUserData
+);
 
 export default router;

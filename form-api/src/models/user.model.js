@@ -5,7 +5,8 @@ const UserSchema = new mongoose.Schema(
 		email: { type: String, required: true, unique: true },
 		fname: { type: String, required: true },
 		lname: { type: String, required: true },
-		files: { type: String },
+		prescriptions: { type: String },
+		vaccinations: { type: String },
 	},
 	{ timestamps: true }
 );

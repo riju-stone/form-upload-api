@@ -130,5 +130,12 @@ dist
 .pnp.*
 
 # custom exclusions
-config/
-uploads/
+form-api/config/default.*
+uploads/prescriptions/**.pdf
+uploads/prescriptions/**.jpeg
+uploads/prescriptions/**.jpg
+uploads/prescriptions/**.png
+uploads/vaccinations/**.jpeg
+uploads/vaccinations/**.pdf
+uploads/vaccinations/**.jpg
+uploads/vaccinations/**.png
